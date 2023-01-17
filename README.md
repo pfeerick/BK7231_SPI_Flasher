@@ -5,4 +5,6 @@ This tool is able to read and write whole flash content of BK7231T (maybe also o
 
 Tested only on Banana Pi, but should also work on Raspberry Pi.
 
-More detailed readme coming soon.
+Detailed writeup and guide:
+https://www.elektroda.com/rtvforum/topic3931424.html
+
