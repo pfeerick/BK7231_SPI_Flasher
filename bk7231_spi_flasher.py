@@ -1,7 +1,9 @@
+import atexit
 import os
-import spidev
 import time
+
 import RPi.GPIO as GPIO
+import spidev
 
 # fmt: off
 SPI_CHIP_ERASE_CMD      = 0xc7
@@ -149,6 +151,13 @@ def ReadStart(startaddr, filename, readlen):
     ChipReset()
     return True
 
+
+def exit_handler():
+    # resets all GPIO ports used by this program
+    GPIO.cleanup()
+
+
+atexit.register(exit_handler)
 
 # Adjust it for your pin
 CENGPIO = GPIO.PB + 21
