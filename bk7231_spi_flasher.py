@@ -1,9 +1,4 @@
-import sys
 import os
-import argparse
-import os
-import sys
-import platform
 import spidev
 import time
 import RPi.GPIO as GPIO
