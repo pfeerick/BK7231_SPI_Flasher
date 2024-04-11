@@ -168,10 +168,12 @@ if BK_EnterSPIMode(spi) == 0:
 
 # this will allow you to write directly bootloader + app
 # WriteImage(0,"OpenBK7231T_App_QIO_35a81303.bin", 0x200000)
+
 # if you have an app that was loaded by bkWriter 1.60 with offs 0x11000,
 # and you have broke your bootloader, you can take bootloader from OBK build
 # and then restore an app
 WriteImage(0, "OpenBK7231T_App_QIO_35a81303.bin", 0x11000)
 WriteImage(0x11000, "REST.bin", 0x200000)
+
 # I used this to verify my code and it work
 # ReadStart(0,"tstReadS.bin", 0x1100)
