@@ -8,6 +8,17 @@ import spidev
 import time
 import RPi.GPIO as GPIO
 
+SPI_CHIP_ERASE_CMD      = 0xc7
+SPI_CHIP_ENABLE_CMD     = 0x06
+SPI_READ_PAGE_CMD       = 0x03
+SPI_WRITE_PAGE_CMD      = 0x02
+SPI_SECTRO_ERASE_CMD    = 0x20
+SPI_SECUR_SECTOR_ERASE  = 0x44
+SPI_ID_READ_CMD         = 0x9F
+SPI_STATU_WR_LOW_CMD    = 0x01
+SPI_STATU_WR_HIG_CMD    = 0x31
+SPI_READ_REG            = 0x05
+
 def ChipReset():
     # set CEN low for 1s
     GPIO.setup(CENGPIO, GPIO.OUT)
@@ -48,17 +59,6 @@ def BK_EnterSPIMode(spi):
 
     print("ID bad")
     return 0
-
-SPI_CHIP_ERASE_CMD		= 0xc7
-SPI_CHIP_ENABLE_CMD		= 0x06
-SPI_READ_PAGE_CMD   	= 0x03
-SPI_WRITE_PAGE_CMD   	= 0x02
-SPI_SECTRO_ERASE_CMD	= 0x20
-SPI_SECUR_SECTOR_ERASE	= 0x44
-SPI_ID_READ_CMD			= 0x9F
-SPI_STATU_WR_LOW_CMD	= 0x01
-SPI_STATU_WR_HIG_CMD	= 0x31
-SPI_READ_REG        	= 0x05
 
 def Wait_Busy_Down():
     while True:
