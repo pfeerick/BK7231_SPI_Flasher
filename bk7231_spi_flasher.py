@@ -21,7 +21,6 @@ SPI_READ_REG            = 0x05
 
 def ChipReset():
     # set CEN low for 1s
-    GPIO.setup(CEN_GPIO, GPIO.OUT)
     GPIO.output(CEN_GPIO, GPIO.LOW)
     time.sleep(1)
     GPIO.output(CEN_GPIO, GPIO.HIGH)
@@ -161,8 +160,10 @@ atexit.register(exit_handler)
 
 # Adjust it for your board/pinout - GPIO8 is CE0 on rPi Zero W
 CEN_GPIO = 8
-# also adjust this to suit your preferences
 GPIO.setmode(GPIO.BCM)
+
+# set CEN_GPIO as output
+GPIO.setup(CEN_GPIO, GPIO.OUT)
 
 spi = spidev.SpiDev()
 spi.open(0, 0)
