@@ -3,6 +3,7 @@ import spidev
 import time
 import RPi.GPIO as GPIO
 
+# fmt: off
 SPI_CHIP_ERASE_CMD      = 0xc7
 SPI_CHIP_ENABLE_CMD     = 0x06
 SPI_READ_PAGE_CMD       = 0x03
@@ -13,6 +14,8 @@ SPI_ID_READ_CMD         = 0x9F
 SPI_STATU_WR_LOW_CMD    = 0x01
 SPI_STATU_WR_HIG_CMD    = 0x31
 SPI_READ_REG            = 0x05
+# fmt: on
+
 
 def ChipReset():
     # set CEN low for 1s
@@ -20,6 +23,7 @@ def ChipReset():
     GPIO.output(CENGPIO, GPIO.LOW)
     time.sleep(1)
     GPIO.output(CENGPIO, GPIO.HIGH)
+
 
 def BK_EnterSPIMode(spi):
     ChipReset()
@@ -30,8 +34,8 @@ def BK_EnterSPIMode(spi):
     a = spi.xfer2(send_buf)
 
     for x in range(250):
-        print(hex(a[x]), end = '')
-        print(" ", end = '')
+        print(hex(a[x]), end="")
+        print(" ", end="")
 
     time.sleep(0.1)
 
@@ -45,15 +49,16 @@ def BK_EnterSPIMode(spi):
     a = spi.xfer2(cmd_id)
 
     for x in range(4):
-        print(hex(a[x]), end = '')
-        print(" ", end = '')
+        print(hex(a[x]), end="")
+        print(" ", end="")
 
-    if a[0] == 0x00 and a[1] == 0x1c and a[2] == 0x70 and a[3] == 0x15:
+    if a[0] == 0x00 and a[1] == 0x1C and a[2] == 0x70 and a[3] == 0x15:
         print("ID OK")
         return 1
 
     print("ID bad")
     return 0
+
 
 def Wait_Busy_Down():
     while True:
@@ -65,27 +70,29 @@ def Wait_Busy_Down():
             break
         time.sleep(0.01)
 
+
 def CHIP_ENABLE_Command():
     send_buf = bytearray(1)
     send_buf[0] = SPI_CHIP_ENABLE_CMD
     spi.xfer(send_buf)
     Wait_Busy_Down()
 
-def WriteImage(startaddr,filename, maxSize):
-    print("WriteImage "+filename)
+
+def WriteImage(startaddr, filename, maxSize):
+    print("WriteImage " + filename)
     statinfo = os.stat(filename)
     # size = statinfo.st_size
     # size = (size+255)//256*256
-    size = maxSize;
+    size = maxSize
 
     count = 0
     addr = startaddr
     f = open(filename, "rb")
 
     while count < size:
-        print("count "+str(count) +"/"+str(size))
+        print("count " + str(count) + "/" + str(size))
         if 1:
-            if 0 == (addr & 0xfff):
+            if 0 == (addr & 0xFFF):
                 CHIP_ENABLE_Command()
                 send_buf = bytearray(4)
                 send_buf[0] = 0x20
@@ -98,12 +105,12 @@ def WriteImage(startaddr,filename, maxSize):
         buf = f.read(256)
         if buf:
             CHIP_ENABLE_Command()
-            send_buf = bytearray(4+256)
+            send_buf = bytearray(4 + 256)
             send_buf[0] = 0x02
             send_buf[1] = (addr & 0xFF0000) >> 16
             send_buf[2] = (addr & 0xFF00) >> 8
             send_buf[3] = addr & 0xFF
-            send_buf[4:4+256] = buf
+            send_buf[4 : 4 + 256] = buf
             spi.xfer(send_buf)
         count += 256
         addr += 256
@@ -112,17 +119,18 @@ def WriteImage(startaddr,filename, maxSize):
 
     return True
 
+
 def ReadStart(startaddr, filename, readlen):
     count = 0
     addr = startaddr
     f = open(filename, "wb")
     size = readlen
-    size = (size+255)//256*256
+    size = (size + 255) // 256 * 256
     print("Reading")
 
     while count < size:
-        print("count "+str(count) +"/"+str(size))
-        send_buf = bytearray(4+256)
+        print("count " + str(count) + "/" + str(size))
+        send_buf = bytearray(4 + 256)
         send_buf[0] = 0x03
         send_buf[1] = (addr & 0xFF0000) >> 16
         send_buf[2] = (addr & 0xFF00) >> 8
@@ -130,10 +138,10 @@ def ReadStart(startaddr, filename, readlen):
         result = spi.xfer2(send_buf)
         count += 256
         addr += 256
-        part = bytearray(result[4:4+256])
+        part = bytearray(result[4 : 4 + 256])
         for x in range(256):
-            print(hex(part[x]), end = '')
-            print(" ", end = '')
+            print(hex(part[x]), end="")
+            print(" ", end="")
         f.write(part)
 
     f.close()
@@ -141,8 +149,9 @@ def ReadStart(startaddr, filename, readlen):
     ChipReset()
     return True
 
+
 # Adjust it for your pin
-CENGPIO = GPIO.PB+21
+CENGPIO = GPIO.PB + 21
 # also adjust it
 GPIO.setmode(GPIO.RAW)
 
@@ -155,14 +164,14 @@ spi.max_speed_hz = 30000
 
 if BK_EnterSPIMode(spi) == 0:
     print("Failed to read flash id")
-    exit();
+    exit()
 
 # this will allow you to write directly bootloader + app
-#WriteImage(0,"OpenBK7231T_App_QIO_35a81303.bin", 0x200000)
+# WriteImage(0,"OpenBK7231T_App_QIO_35a81303.bin", 0x200000)
 # if you have an app that was loaded by bkWriter 1.60 with offs 0x11000,
 # and you have broke your bootloader, you can take bootloader from OBK build
 # and then restore an app
-WriteImage(0,"OpenBK7231T_App_QIO_35a81303.bin", 0x11000)
-WriteImage(0x11000,"REST.bin", 0x200000)
+WriteImage(0, "OpenBK7231T_App_QIO_35a81303.bin", 0x11000)
+WriteImage(0x11000, "REST.bin", 0x200000)
 # I used this to verify my code and it work
-#ReadStart(0,"tstReadS.bin", 0x1100)
+# ReadStart(0,"tstReadS.bin", 0x1100)
