@@ -5,6 +5,18 @@ This tool is able to read and write whole flash content of BK7231T (maybe also o
 
 Tested only on Banana Pi, but should also work on Raspberry Pi.
 
-Detailed writeup and guide:
-https://www.elektroda.com/rtvforum/topic3931424.html
 
+## Getting started
+### Raspberry Pi Zero W
+- enable SPI in `raspi-config`
+- create a self-contained python virtual environment: `python3 -m venv env` 
+- active virtual environment: `source env/bin/activate`
+- install `spidev` package: `python -m pip install spidev`
+- ensure rpi-gpio python package installed `sudo apt-get install python-dev python-rpi.gpio`
+
+## BananaPi
+- Use https://github.com/LeMaker/RPi.GPIO_BP instead of rpi-gpio
+
+
+## Detailed writeup and guide:
+https://www.elektroda.com/rtvforum/topic3931424.html
