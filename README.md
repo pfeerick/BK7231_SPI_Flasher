@@ -8,11 +8,11 @@ Tested only on Banana Pi, but should also work on Raspberry Pi.
 
 ## Getting started
 ### Raspberry Pi Zero W
-- enable SPI in `raspi-config`
+- enable SPI in `raspi-config` (`sudo raspi-config nonint do_spi 0`)
+- ensure rpi-gpio and python-dev package installed `sudo apt-get install python3-dev python3-rpi.gpio`
 - create a self-contained python virtual environment: `python3 -m venv env` 
 - active virtual environment: `source env/bin/activate`
 - install `spidev` package: `python -m pip install spidev`
-- ensure rpi-gpio python package installed `sudo apt-get install python-dev python-rpi.gpio`
 
 ## BananaPi
 - Use https://github.com/LeMaker/RPi.GPIO_BP instead of rpi-gpio
